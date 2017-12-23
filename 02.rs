@@ -24,7 +24,7 @@ fn main() {
 
 fn calculate_checksum(matrix: &str) -> (u32, u32) {
     let tuple = matrix.lines().map(|s| {
-        s.trim().split('\t').map(|s| s.parse().unwrap()).collect::<Vec<u32>>()
+        s.split('\t').map(|s| s.parse().unwrap()).collect::<Vec<u32>>()
     }).collect::<Vec<Vec<u32>>>().iter().map(|line| {
         (
             (*line.iter().min().unwrap() as i32 - *line.iter().max().unwrap() as i32).abs() as u32,
