@@ -23,11 +23,15 @@ fn main() {
 }
 
 fn calculate_checksum(matrix: &str) -> (u32, u32) {
-    let tuple = matrix.lines().map(|s| {
+    let data = matrix.lines().map(|s| {
         s.split('\t').map(|s| s.parse().unwrap()).collect::<Vec<u32>>()
-    }).collect::<Vec<Vec<u32>>>().iter().map(|line| {
-        (
-            (*line.iter().min().unwrap() as i32 - *line.iter().max().unwrap() as i32).abs() as u32,
+    }).collect::<Vec<Vec<u32>>>();
+
+    (
+        data.iter().map(|line| {
+            (*line.iter().min().unwrap() as i32 - *line.iter().max().unwrap() as i32).abs() as u32
+        }).sum(),
+        data.iter().map(|line| {
             line.iter().map(|a: &u32| {
                 line.iter().map(move |b: &u32| {
                     if a != b && a % b == 0 {
@@ -37,12 +41,6 @@ fn calculate_checksum(matrix: &str) -> (u32, u32) {
                     }
                 }).sum::<u32>()
             }).sum::<u32>()
-        )
-    }).collect::<Vec<(u32, u32)>>();
-
-    (tuple.iter().map(|&(a, _)| {
-        a
-    }).sum(), tuple.iter().map(|&(_, b)| {
-        b
-    }).sum())
+        }).sum()
+    )
 }
