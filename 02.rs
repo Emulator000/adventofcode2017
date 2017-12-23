@@ -16,11 +16,15 @@ fn main() {
 401	151	309	961	124	1027	1084	389	1150	166	1057	137	932	669	590	188
 784	232	363	316	336	666	711	430	192	867	628	57	222	575	622	234";
 
-    let rows = matrix.split("\n").collect::<Vec<&str>>();
+    let sum: u32 = matrix.lines().map(|s| {
+        s.trim().split('\t').map(|s| s.parse().unwrap()).collect::<Vec<u32>>()
+    }).collect::<Vec<Vec<u32>>>().iter().map(|line| {
+        line.iter().filter(|num| {
+            *num == line.iter().clone().min().unwrap() || *num == line.iter().clone().max().unwrap()
+        }).fold(0u32, |sum, num| {
+            (sum as i32 - *num as i32).abs() as u32
+        })
+    }).collect::<Vec<u32>>().iter().sum();
 
-    let cells = rows.iter().map(|row| {
-        row.split("\t").collect::<Vec<&str>>()
-    });
-
-    println!("{:?}", cells.len());
+    println!("Checksum: {:?}", sum);
 }
