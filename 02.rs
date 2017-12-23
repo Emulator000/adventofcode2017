@@ -27,20 +27,15 @@ fn calculate_checksum(matrix: &str, divisible: bool) -> u32 {
         if !divisible {
             (*line.iter().min().unwrap() as i32 - *line.iter().max().unwrap() as i32).abs() as u32
         } else {
-            let mut division = 0;
-            'main: for (i, a) in line.iter().enumerate() {
-                for b in line[i + 1..].iter() {
-                    if a % b == 0 {
-                        division = a / b;
-                        break 'main;
-                    } else if b % a == 0 {
-                        division = b / a;
-                        break 'main;
+            line.iter().map(|a: &u32| {
+                line.iter().map(move |b: &u32| {
+                    if a != b && a % b == 0 {
+                        a / b
+                    } else {
+                        0
                     }
-                }
-            }
-
-            division
+                }).sum::<u32>()
+            }).sum::<u32>()
         }
     }).collect::<Vec<u32>>().iter().sum()
 }
