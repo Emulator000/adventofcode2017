@@ -16,15 +16,31 @@ fn main() {
 401	151	309	961	124	1027	1084	389	1150	166	1057	137	932	669	590	188
 784	232	363	316	336	666	711	430	192	867	628	57	222	575	622	234";
 
-    let sum: u32 = matrix.lines().map(|s| {
+    println!("Checksum 1: {:?}", calculate_checksum(matrix, false));
+    println!("Checksum 2: {:?}", calculate_checksum(matrix, true));
+}
+
+fn calculate_checksum(matrix: &str, divisible: bool) -> u32 {
+    matrix.lines().map(|s| {
         s.trim().split('\t').map(|s| s.parse().unwrap()).collect::<Vec<u32>>()
     }).collect::<Vec<Vec<u32>>>().iter().map(|line| {
-        line.iter().filter(|num| {
-            *num == line.iter().clone().min().unwrap() || *num == line.iter().clone().max().unwrap()
-        }).fold(0u32, |sum, num| {
-            (sum as i32 - *num as i32).abs() as u32
-        })
-    }).collect::<Vec<u32>>().iter().sum();
+        if !divisible {
+            (*line.iter().min().unwrap() as i32 - *line.iter().max().unwrap() as i32).abs() as u32
+        } else {
+            let mut division = 0;
+            'main: for (i, a) in line.iter().enumerate() {
+                for b in line[i + 1..].iter() {
+                    if a % b == 0 {
+                        division = a / b;
+                        break 'main;
+                    } else if b % a == 0 {
+                        division = b / a;
+                        break 'main;
+                    }
+                }
+            }
 
-    println!("Checksum: {:?}", sum);
+            division
+        }
+    }).collect::<Vec<u32>>().iter().sum()
 }
